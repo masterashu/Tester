@@ -59,7 +59,7 @@ void MainWindow::on_TestButton_clicked()
     system("cd /home/$USER/Documents/Tester/temp/; gcc -o prog source.c;");
 
     // running the program
-    QString inputpath = QString("cp /home/$USER/Documents/Tester/Problems/input%1.txt /home/$USER/Documents/Tester/temp/input.txt;").arg(QNumber);
+    QString inputpath = QString("cp /home/$USER/Documents/Tester/Problems/%1/input.txt /home/$USER/Documents/Tester/temp/input.txt;").arg(QNumber);
     system("cp /home/$USER/Documents/Tester/Problems/input1.txt /home/$USER/Documents/Tester/temp/input.txt;");
     if(system("cd /home/$USER/Documents/Tester/temp/; ./prog < input.txt > output.txt")){
         ui->Console_Output->setText("Unable to Run Program!");
