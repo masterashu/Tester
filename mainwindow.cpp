@@ -25,9 +25,33 @@ MainWindow::~MainWindow()
     delete ui;
 }
 
+void CopyFiles(){
+    // Deleting any temp files
+
+    system("cd $HOME/Documents/Tester/temp/; rm * ;");
+
+    QString Question = QString::number(QNumber);
+    QString inputcopy = QString("cp /home/$USER/Documents/Tester/Problems/%1/input.txt /home/$USER/Documents/Tester/temp/input.txt;").arg(Question);
+    std::string INPUTCOPY = inputcopy.toStdString();
+    char COMMAND[1000];
+    strcpy(COMMAND, INPUTCOPY.c_str());
+    system(COMMAND);
+    QString checkcopy = QString("cp /home/$USER/Documents/Tester/Problems/%1/check.txt /home/$USER/Documents/Tester/temp/check.txt;").arg(Question);
+    std::string CHECKCOPY = checkcopy.toStdString();
+    strcpy(COMMAND, CHECKCOPY.c_str());
+    system(COMMAND);
+}
+
 void MainWindow::on_Program_Check_clicked()
 {
-
+    ui->Souce_Edit->setReadOnly(true);
+    if(system("cd $HOME/Documents/Tester/temp/; gcc -o prog source.c;")){
+        ui->Console_Output->setText("Compilation error!\nCheck Termional for more details.");
+    }
+    else{
+        ui->Console_Output->setText("Compilation Successful.\nNow test your program against the custom testcases.");
+    }
+    ui->Souce_Edit->setReadOnly(false);
 }
 
 
@@ -39,35 +63,42 @@ void MainWindow::on_comboBox_currentIndexChanged(int index)
 
 void MainWindow::on_TestButton_clicked()
 {
+    CopyFiles();
+
     ui->Souce_Edit->setReadOnly(true);
     QString Code;
     Code = ui->Souce_Edit->toPlainText();
 
-    // Deleting any temp files
-    system("cd /home/$USER/Documents/Tester/temp/; rm * ;");
 
     // Saving the souce code in the file source.c
+    system("touch $HOME/Documents/Tester/temp/source.c;");
+
+    /* It is necessory to have /home/'username' instead of $HOME because it won't work inside Qt.
+        */
+
     QString path = QString("/home/%1/Documents/Tester/temp/source.c").arg(username);
     QFile sourcecode(path);
     if(sourcecode.open(QIODevice::ReadWrite | QIODevice::Text)){
         QTextStream stream(&sourcecode);
-        stream.operator <<(Code);
+        stream << Code << endl;
         sourcecode.close();
     }
 
     // compiling the file
-    system("cd /home/$USER/Documents/Tester/temp/; gcc -o prog source.c;");
-
-    // running the program
-    QString inputpath = QString("cp /home/$USER/Documents/Tester/Problems/%1/input.txt /home/$USER/Documents/Tester/temp/input.txt;").arg(QNumber);
-    system("cp /home/$USER/Documents/Tester/Problems/input1.txt /home/$USER/Documents/Tester/temp/input.txt;");
-    if(system("cd /home/$USER/Documents/Tester/temp/; ./prog < input.txt > output.txt")){
-        ui->Console_Output->setText("Unable to Run Program!");
-        return;
+    if(system("cd $HOME/Documents/Tester/temp/; gcc -o prog.out source.c;")){
+        ui->Console_Output->setText("Compilation error!\nCheck Termional for more details.");
+        ui->Souce_Edit->setReadOnly(false);
     }
 
+    // running the program
+
+    if(system("cd $HOME/Documents/Tester/temp/; ./prog.out < input.txt > output.txt")){
+        ui->Console_Output->setText("Unable to Run Program!");
+        ui->Souce_Edit->setReadOnly(false);
+        return;
+    }
     // checking the output
-    QString checkpath = QString("/home/%1/Documents/Tester/Problems/check1.txt").arg(username);
+    QString checkpath = QString("/home/%1/Documents/Tester/temp/check.txt").arg(username);
     QString outputpath = QString("/home/%1/Documents/Tester/temp/output.txt").arg(username);
     QString Output, Check;
     QFile output(outputpath);
@@ -75,6 +106,9 @@ void MainWindow::on_TestButton_clicked()
         QTextStream a(&output);
         Output = a.readAll();
         output.close();
+    }
+    else{
+        ui->Console_Output->setText("Output file not found, Check if your program provides any output to the console.");
     }
     QFile check(checkpath);
     if(check.open(QIODevice::ReadOnly | QIODevice::Text)){
