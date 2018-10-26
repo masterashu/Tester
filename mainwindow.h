@@ -2,6 +2,8 @@
 #define MAINWINDOW_H
 
 #include <QMainWindow>
+#include "about.h"
+#include "ui_about.h"
 
 namespace Ui {
 class MainWindow;
@@ -31,6 +33,8 @@ private slots:
     void on_actionSet_Tab_Width_triggered();
 
     void on_actionChange_Font_triggered();
+
+    void on_actionAbout_Tester2_triggered();
 
 private:
     Ui::MainWindow *ui;

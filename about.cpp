@@ -1,14 +1,14 @@
 #include "about.h"
 #include "ui_about.h"
 
-About::About(QWidget *parent) :
+about::about(QWidget *parent) :
     QDialog(parent),
-    ui(new Ui::About)
+    ui(new Ui::about)
 {
     ui->setupUi(this);
 }
 
-About::~About()
+about::~about()
 {
     delete ui;
 }

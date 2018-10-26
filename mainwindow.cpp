@@ -1,10 +1,14 @@
 #include "mainwindow.h"
+#include "about.h"
+#include "ui_about.h"
 #include "ui_mainwindow.h"
+#include "about.h"
 #include <QString>
 #include <QTextStream>
 #include <QCoreApplication>
 #include <QFile>
 #include <QFont>
+#include <QFontDialog>
 #include <QInputDialog>
 #include <QFileDialog>
 #include <string>
@@ -154,7 +158,7 @@ void MainWindow::on_Program_Check_clicked()
 
     ui->Source_Edit->setReadOnly(true);
     if(system("cd $HOME/Documents/Tester/temp/; gcc -o prog source.c;")){
-        ui->Console_Output->setText("Compilation error!\nCheck Termional for more details.");
+        ui->Console_Output->setText("Compilation error!\nCheck Terminal for more details.");
     }
     else{
         ui->Console_Output->setText("Compilation Successful.\nNow test your program against the custom testcases.");
@@ -203,5 +207,18 @@ void MainWindow::on_actionSet_Tab_Width_triggered()
 
 void MainWindow::on_actionChange_Font_triggered()
 {
-    ui->Console_Output->setFont(GREEN);
+    bool ok;
+    QFont current = ui->Source_Edit->font();
+    QFont newfont = QFontDialog::getFont(&ok, current, this, "Select a Font");
+    if(ok){
+        ui->Source_Edit->setFont(newfont);
+    }
 }
+
+void MainWindow::on_actionAbout_Tester2_triggered()
+{
+    about aboutwindow;
+    aboutwindow.setModal(true);
+    aboutwindow.exec();
+}
+
