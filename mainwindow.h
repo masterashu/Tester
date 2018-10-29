@@ -5,7 +5,8 @@
 #include "about.h"
 #include "ui_about.h"
 
-namespace Ui {
+namespace Ui
+{
 class MainWindow;
 }
 
@@ -13,11 +14,11 @@ class MainWindow : public QMainWindow
 {
     Q_OBJECT
 
-public:
+  public:
     explicit MainWindow(QWidget *parent = 0);
     ~MainWindow();
 
-private slots:
+  private slots:
     void updateQuestion();
 
     void on_Program_Check_clicked();
@@ -36,7 +37,7 @@ private slots:
 
     void on_actionAbout_Tester2_triggered();
 
-private:
+  private:
     Ui::MainWindow *ui;
 };
 
