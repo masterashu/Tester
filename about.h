@@ -3,7 +3,8 @@
 
 #include <QDialog>
 
-namespace Ui {
+namespace Ui
+{
 class about;
 }
 
@@ -11,14 +12,14 @@ class about : public QDialog
 {
     Q_OBJECT
 
-public:
+  public:
     explicit about(QWidget *parent = 0);
     ~about();
 
-private slots:
+  private slots:
     void on_pushButton_clicked();
 
-private:
+  private:
     Ui::about *ui;
 };
 

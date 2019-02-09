@@ -18,15 +18,13 @@ QString username = qgetenv("USER");
 QTextStream out(stdout);
 int QNumber = 1;
 
-MainWindow::MainWindow(QWidget *parent) :
-    QMainWindow(parent),
-    ui(new Ui::MainWindow)
+MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent),
+                                          ui(new Ui::MainWindow)
 {
     ui->setupUi(this);
     ui->username_label->setText("Hello, " + username + ".");
     updateQuestion();
     system("cd /home/$USER/Documents/Tester/temp/; rm * ;");
-
 }
 
 MainWindow::~MainWindow()
@@ -34,7 +32,8 @@ MainWindow::~MainWindow()
     delete ui;
 }
 
-void CopyFiles(){
+void CopyFiles()
+{
     // Deleting any temp files
 
     system("cd $HOME/Documents/Tester/temp/; rm * ;");
@@ -59,7 +58,6 @@ void MainWindow::on_TestButton_clicked()
     QString Code;
     Code = ui->Source_Edit->toPlainText();
 
-
     // Saving the souce code in the file source.c
     system("touch $HOME/Documents/Tester/temp/source.c;");
 
@@ -68,20 +66,23 @@ void MainWindow::on_TestButton_clicked()
 
     QString path = QString("/home/%1/Documents/Tester/temp/source.c").arg(username);
     QFile sourcecode(path);
-    if(sourcecode.open(QIODevice::ReadWrite | QIODevice::Text)){
+    if (sourcecode.open(QIODevice::ReadWrite | QIODevice::Text))
+    {
         QTextStream stream(&sourcecode);
         stream << Code << endl;
         sourcecode.close();
     }
 
     // compiling the file
-    if(system("cd $HOME/Documents/Tester/temp/; gcc -o prog.out source.c;")){
+    if (system("cd $HOME/Documents/Tester/temp/; gcc -o prog.out source.c;"))
+    {
         ui->Console_Output->setText("Compilation error!\nCheck Termional for more details.");
         ui->Source_Edit->setReadOnly(false);
     }
     // running the program
 
-    if(system("cd $HOME/Documents/Tester/temp/; ./prog.out < input.txt > output.txt")){
+    if (system("cd $HOME/Documents/Tester/temp/; ./prog.out < input.txt > output.txt"))
+    {
         ui->Console_Output->setText("Unable to Run Program!");
         ui->Source_Edit->setReadOnly(false);
         return;
@@ -93,34 +94,41 @@ void MainWindow::on_TestButton_clicked()
     QString outputpath = QString("/home/%1/Documents/Tester/temp/output.txt").arg(username);
     QString Output, Check;
     QFile output(outputpath);
-    if(output.open(QIODevice::ReadOnly | QIODevice::Text)){
+    if (output.open(QIODevice::ReadOnly | QIODevice::Text))
+    {
         QTextStream a(&output);
         Output = a.readAll();
         output.close();
     }
-    else{
+    else
+    {
         ui->Console_Output->setText("Output file not found, Check if your program provides any output to the console.");
     }
     QFile check(checkpath);
-    if(check.open(QIODevice::ReadOnly | QIODevice::Text)){
+    if (check.open(QIODevice::ReadOnly | QIODevice::Text))
+    {
         QTextStream b(&check);
         Check = b.readAll();
         check.close();
     }
-    if(QString::compare(Output, Check) == 0){
+    if (QString::compare(Output, Check) == 0)
+    {
         ui->Console_Output->setText("Code Accepted!");
     }
-    else{
+    else
+    {
         ui->Console_Output->setText("Wrong Answer!");
     }
     ui->Source_Edit->setReadOnly(false);
 }
 
-void MainWindow::updateQuestion(){
+void MainWindow::updateQuestion()
+{
     QString QNo = QString::number(QNumber);
     QString Questionpath = QString("/home/%1/Documents/Tester/Problems/%2/question.txt").arg(username, QNo);
     QFile Question(Questionpath);
-    if(Question.open(QIODevice::ReadOnly|QIODevice::Text)){
+    if (Question.open(QIODevice::ReadOnly | QIODevice::Text))
+    {
         QTextStream Q(&Question);
         QString question = Q.readAll();
         ui->Question_label->setText(question);
@@ -137,7 +145,6 @@ void MainWindow::updateQuestion(){
     }
 }
 
-
 void MainWindow::on_Program_Check_clicked()
 {
     ui->Console_Output->clear();
@@ -149,29 +156,30 @@ void MainWindow::on_Program_Check_clicked()
 
     QString path = QString("/home/%1/Documents/Tester/temp/source.c").arg(username);
     QFile sourcecode(path);
-    if(sourcecode.open(QIODevice::ReadWrite | QIODevice::Text)){
+    if (sourcecode.open(QIODevice::ReadWrite | QIODevice::Text))
+    {
         QTextStream stream(&sourcecode);
         stream << Code << endl;
         sourcecode.close();
     }
 
     ui->Source_Edit->setReadOnly(true);
-    if(system("cd $HOME/Documents/Tester/temp/; gcc -o prog source.c;")){
+    if (system("cd $HOME/Documents/Tester/temp/; gcc -o prog source.c;"))
+    {
         ui->Console_Output->setText("Compilation error!\nCheck Terminal for more details.");
     }
-    else{
+    else
+    {
         ui->Console_Output->setText("Compilation Successful.\nNow test your program against the custom testcases.");
     }
     ui->Source_Edit->setReadOnly(false);
 }
-
 
 void MainWindow::on_comboBox_currentIndexChanged(int index)
 {
     QNumber = index + 1;
     updateQuestion();
 }
-
 
 // Menu bar Exit option;
 
@@ -186,12 +194,14 @@ void MainWindow::on_actionOpen_Source_Code_file_triggered()
     QString dir = QString("/home/%1/").arg(username);
     Source = QFileDialog::getOpenFileName(this, tr("Open Source Code File"), dir, tr("C Source Code Files (*.c)"));
     QFile sourcefile(Source);
-    if(sourcefile.open(QIODevice::ReadOnly|QIODevice::Text)){
+    if (sourcefile.open(QIODevice::ReadOnly | QIODevice::Text))
+    {
         QTextStream stream(&sourcefile);
         SourceCode = stream.readAll();
         sourcefile.close();
     }
-    else{
+    else
+    {
         SourceCode = "For some unknown reason we were unable to open the file!\nTry Copying the code this time, or just write the code here itself.";
     }
     ui->Source_Edit->setText(SourceCode);
@@ -209,7 +219,8 @@ void MainWindow::on_actionChange_Font_triggered()
     bool ok;
     QFont current = ui->Source_Edit->font();
     QFont newfont = QFontDialog::getFont(&ok, current, this, "Select a Font");
-    if(ok){
+    if (ok)
+    {
         ui->Source_Edit->setFont(newfont);
     }
 }
@@ -220,4 +231,3 @@ void MainWindow::on_actionAbout_Tester2_triggered()
     aboutwindow.setModal(true);
     aboutwindow.exec();
 }
-
