@@ -14,7 +14,6 @@
 #include <string>
 #include <stdlib.h>
 
-QFont GREEN;
 QString username = qgetenv("USER");
 QTextStream out(stdout);
 int QNumber = 1;
